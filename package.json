@@ -4,11 +4,16 @@
     "description": "my first socket.io app",
     "type": "module",
     "dependencies": {
-        "express": "^4.21.2"
+        "express": "^4.21.2",
+        "nodemon": "^3.1.10"
     },
     "author": "Mohamed Aboelnasr",
     "repository": {
         "type": "git",
         "url": "https://github.com/MohamedAboElnaser/socket-example.git"
+    },
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
     }
 }
