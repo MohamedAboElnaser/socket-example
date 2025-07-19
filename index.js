@@ -23,12 +23,33 @@ app.get("/", (req, res) => {
 // Handle Socket.IO connections
 io.on("connection", (socket) => {
     console.log(`🟢 New client connected with id: ${socket.id}`);
+    // Listen for disconnection events
     socket.on("disconnect", () => {
         console.log(`🔴 Client disconnected with id: ${socket.id}`);
     });
+
+    // Listen for chat message events
     socket.on("chat message", (msg) => {
         console.log("message: " + msg);
     });
+
+    socket.timeout(3000).emit(
+        "request", // name of the event
+        "Hello from server with timeout!", // first argument
+        { name: "Mohamed" }, // second argument (optional)
+        // Callback function to handle the response
+        (err, res) => {
+            if (err) {
+                console.log(
+                    "Timeout occurred and client did not response:",
+                    err
+                );
+            } else {
+                // Client responded
+                console.log("Client responded=>", res);
+            }
+        }
+    );
 });
 
 // Emit a message to all connected clients
