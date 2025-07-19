@@ -22,9 +22,12 @@ app.get("/", (req, res) => {
 
 // Handle Socket.IO connections
 io.on("connection", (socket) => {
-    console.log(`New client connected with id: ${socket.id}`);
+    console.log(`🟢 New client connected with id: ${socket.id}`);
+    socket.on("disconnect", () => {
+        console.log(`🔴 Client disconnected with id: ${socket.id}`);
+    });
     
-});
+}); 
 
 server.listen(3000, () => {
     console.log("server running at http://localhost:3000");
