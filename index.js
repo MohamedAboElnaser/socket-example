@@ -26,8 +26,13 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log(`🔴 Client disconnected with id: ${socket.id}`);
     });
-    
-}); 
+    socket.on("chat message", (msg) => {
+        console.log("message: " + msg);
+    });
+});
+
+// Emit a message to all connected clients
+io.emit("chat message", "Welcome to the chat!");
 
 server.listen(3000, () => {
     console.log("server running at http://localhost:3000");
