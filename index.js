@@ -88,20 +88,6 @@ io.on("connection", async (socket) => {
             console.error("Error fetching messages:", e);
         }
     }
-
-    //
-    try {
-        const res = await socket
-            .timeout(1)
-            .emitWithAck("request", "Hello from server with timeout!", {
-                name: "Mohamed",
-            });
-        // Client responded
-        console.log("Client responded=>", res);
-    } catch (e) {
-        // the client did not acknowledge the event in the given delay
-        console.log("Timeout occurred and client did not response:", e.message);
-    }
 });
 
 // Emit a message to all connected clients
