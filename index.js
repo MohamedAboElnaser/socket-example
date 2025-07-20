@@ -39,9 +39,6 @@ app.get("/", (req, res) => {
 
 // Handle Socket.IO connections
 io.on("connection", async (socket) => {
-    // Explore the socket object
-    console.log("Socket properties:", Object.keys(socket));
-    console.log("Handshake:", socket.handshake);
     console.log(`🟢 New client connected with id: ${socket.id}`);
     // Listen for disconnection events
     socket.on("disconnect", () => {
@@ -49,23 +46,31 @@ io.on("connection", async (socket) => {
     });
 
     // Listen for chat message events
-    socket.on("chat message", async (msg) => {
+    socket.on("chat message", async (msg, clientOffset, cb) => {
         console.log("message: " + msg);
         // Save the message to the database
         let result;
         try {
             result = await db.run(
-                "INSERT INTO messages (content) VALUES (?)",
-                msg
+                "INSERT INTO messages (content, client_offset) VALUES (?, ?)",
+                msg,
+                clientOffset // Use clientOffset to ensure uniqueness
             );
         } catch (e) {
-            console.error("Error inserting message:", e);
+            if (e.errno === 19 /* SQLITE_CONSTRAINT */) {
+                // the message was already inserted, so we notify the client
+                callback();
+            } else {
+                // nothing to do, just let the client retry
+            }
             return;
         }
         console.log("Message saved with ID:", result.lastID);
 
         // Emit the message to all connected clients including the sender
         io.emit("chat message", msg, result.lastID);
+        // Acknowledge the message reception
+        cb();
     });
 
     if (!socket.recovered) {
