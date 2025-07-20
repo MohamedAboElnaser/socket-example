@@ -39,6 +39,9 @@ app.get("/", (req, res) => {
 
 // Handle Socket.IO connections
 io.on("connection", async (socket) => {
+    // Explore the socket object
+    console.log("Socket properties:", Object.keys(socket));
+    console.log("Handshake:", socket.handshake);
     console.log(`🟢 New client connected with id: ${socket.id}`);
     // Listen for disconnection events
     socket.on("disconnect", () => {
@@ -61,7 +64,7 @@ io.on("connection", async (socket) => {
         }
         console.log("Message saved with ID:", result.lastID);
 
-        // Emit the message to all connected clients
+        // Emit the message to all connected clients including the sender
         io.emit("chat message", msg, result.lastID);
     });
 
@@ -81,7 +84,7 @@ io.on("connection", async (socket) => {
         }
     }
 
-    // 
+    //
     try {
         const res = await socket
             .timeout(1)

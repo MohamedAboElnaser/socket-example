@@ -68,6 +68,10 @@
                 auth: {
                     serverOffset: 0,
                 },
+                // Reconnection settings
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000,
             });
             const form = document.getElementById("form");
             const input = document.getElementById("input");
